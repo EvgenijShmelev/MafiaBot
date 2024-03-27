@@ -51,7 +51,7 @@ def finde_thegame(message):
             if player.role == "Mafia":
                 Mafia_room.append(player)  # Добавляет людей с ролью мафии в отдельный масив Mafia_room
             Mafia.send_message(player.id_chat, "Игра начинается")
-        start_game(message=message)
+        start_game(message)
 
 
 def start_game(message):
@@ -63,44 +63,52 @@ def start_game(message):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Наступила ночь.")
         Mafia.send_message(player.id_chat, f"Мафия делает свой выбор.")
-    time_sleep(60)
+    global Mafia_chat_mode
     Mafia_chat_mode = True
-    
+    time_sleep(60)
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")
 
 
-        
+
+
+
 
 
 def time_sleep(second):
     sleep(second)
-        
+
 
 
 @Mafia.message_handler(func=lambda message: True)
 def on_message(message):
     print(message)
-    for i in range(0,len(lobby)):
+    for i in range(0, len(lobby)):
             id = lobby[i].id_chat
             if id == message.from_user.id: # Обрабатывает сообщение если человек находится в лобби
                 if Mafia_chat_mode == False:   # Если чат общий
-                    for i in range(0,len(lobby)):       
+                    for i in range(0, len(lobby)):
                             id = lobby[i].id_chat
                             if id != message.from_user.id:  # Убирает эфект эхо
                                 Mafia.send_message(id, message.text)   # общий анонимный чат
                 else:
-                    for i in range(0,len(Mafia_room)):       
-                            id = Mafia_room[i].id_chat
-                            if id != message.from_user.id:  # Убирает эфект эхо
-                                Mafia.send_message(id, message.text)
-                                  
-                            
-                            
-                                    
+                    for i in range(0, len(Mafia_room)):
+                        id = Mafia_room[i].id_chat
+                        if id == message.from_user.id: # Обрабатывает сообщение если человек находится в лобби мафии
+                            for i in range(0, len(Mafia_room)):
+                                    id = Mafia_room[i].id_chat
+                                    if id != message.from_user.id:  # Убирает эфект эхо
+                                        Mafia.send_message(id, message.text)
 
 
-    
 
 
-    
+
+
+
+
+
+
 
 Mafia.polling(none_stop=True)   # точка входа

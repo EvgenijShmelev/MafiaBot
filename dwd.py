@@ -5,7 +5,6 @@ def f(f_stop):
     if not f_stop.is_set():
         # вызывем функцию f каждые 60 секунд
         t = threading.Timer(5, f, [f_stop]).start()
-        t.
 
 f_stop = threading.Event()
 
