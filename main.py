@@ -25,7 +25,7 @@ def finde_thegame(message):
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
 
-    if len(waiting_room) == 2:
+    if len(waiting_room) >= 2:
         random_name = Name
         random.shuffle(random_name)  # перебор массива имён
         random_role = Role
@@ -37,21 +37,21 @@ def finde_thegame(message):
             player.name = random_name[i]
             player.role = random_role[i]
             lobby.append(player)
-
+        waiting_room.clear()
 
         for i in range(0,len(lobby)):
             player = lobby[i]
             Mafia.send_message(player.id_chat, f"Ваше имя {player.name}, ваша роль {player.role}")
             Mafia.send_message(player.id_chat, "Игра начинается")
+        start_game(message=message)
 
 
-@Mafia.message_handler(func=lambda message: message.text == "Игра начинается")
 def start_game(message):
-    Mafia.send_message( message.from_user.id, f"Переход в режим игры!")
-    for i in range(0,len(lobby)):
-        player = lobby[i]
+    new_lobby = lobby
+    lobby.clear()
+    for i in range(0,len(new_lobby)):
+        player = new_lobby[i]
         Mafia.send_message(player.id_chat, f"Переход в режим игры!")
-
 
 
 
