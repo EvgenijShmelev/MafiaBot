@@ -1,8 +1,7 @@
 import telebot
 from telebot import types
 from roles import MafiaPlayer
-import random
-
+import random, threading
 Mafia = telebot.TeleBot('6847605581:AAFshf6F811PHzdMu98gvEg26RRNOrLf2Y8')
 
 users = set()
@@ -20,17 +19,16 @@ def finde_thegame(message):
 
     waiting_room.append(message.from_user.id)
 
-    
-    Mafia.send_message(message.from_user.id, f"Вы попали в комнату ожидания. В ней {len(waiting_room)} игрок(а)") 
+    Mafia.send_message(message.from_user.id, f"Вы попали в комнату ожидания. В ней {len(waiting_room)} игрок(а)")
 
     for user in waiting_room:
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
-            
+
     if len(waiting_room) == 2:
-        random_name = Name  
+        random_name = Name
         random.shuffle(random_name)  # перебор массива имён
-        random_role = Role 
+        random_role = Role
         random.shuffle(random_role)   # перебор массива ролей
 
         for i in range(0, len(waiting_room)):
@@ -43,7 +41,18 @@ def finde_thegame(message):
 
         for i in range(0,len(lobby)):
             player = lobby[i]
-            Mafia.send_message(player.id_chat, f"Ваше имя {player.name}, ваша роль {player.role}") 
+            Mafia.send_message(player.id_chat, f"Ваше имя {player.name}, ваша роль {player.role}")
+            Mafia.send_message(player.id_chat, "Игра начинается")
+
+
+@Mafia.message_handler(func=lambda message: message.text == "Игра начинается")
+def start_game(message):
+    Mafia.send_message( message.from_user.id, f"Переход в режим игры!")
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Переход в режим игры!")
+
+
 
 
 @Mafia.message_handler(func=lambda message: True)
@@ -57,10 +66,3 @@ def on_message(message):
     users.add(message.from_user.id)
 
 Mafia.polling(none_stop=True)   # точка входа
-
-
-
-
-
-
-
