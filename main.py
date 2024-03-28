@@ -12,7 +12,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia", "cityzen"] 
+Role = ["Mafia", "cityzen"]
 
 waiting_room = []
 
@@ -69,17 +69,17 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия делает свой выбор")
-    file = open('Mafia-knife.jpg', 'rb')
+    file = open('Mafia-knife3.png', 'rb')
     for i in range(0,len(Mafia_room)):
         id = Mafia_room[i].id_chat
         markup = mafia_buttons_photo(message)
-        Mafia.send_photo(id, file, reply_markup=markup)    
+        Mafia.send_photo(id, file)
     time_sleep(5)
-           
+
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
-    
+
 
 def mafia_buttons_photo(message):
     markup = types.InlineKeyboardMarkup()
