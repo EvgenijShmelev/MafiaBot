@@ -12,7 +12,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar"]
 
-Role = ["Mafia", "Mafia", "cityzen"]
+Role = ["Mafia", "cityzen"]
 
 waiting_room = []
 
@@ -31,7 +31,7 @@ def finde_thegame(message):
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
 
-    if len(waiting_room) >= 3:
+    if len(waiting_room) >= 2:
         random_name = Name
         random.shuffle(random_name)  # перебор массива имён
         random_role = Role
@@ -72,10 +72,6 @@ def start_game(message):
 
 
 
-
-
-
-
 def time_sleep(second):
     sleep(second)
 
@@ -87,28 +83,20 @@ def on_message(message):
     for i in range(0, len(lobby)):
             id = lobby[i].id_chat
             if id == message.from_user.id: # Обрабатывает сообщение если человек находится в лобби
+                name = lobby[i].name
                 if Mafia_chat_mode == False:   # Если чат общий
-                    for i in range(0, len(lobby)):
-                            id = lobby[i].id_chat
+                    for a in range(0, len(lobby)):
+                            id = lobby[a].id_chat
                             if id != message.from_user.id:  # Убирает эфект эхо
-                                Mafia.send_message(id, message.text)   # общий анонимный чат
+                                Mafia.send_message(id, f"{name}: {message.text}")   # общий анонимный чат
                 else:
-                    for i in range(0, len(Mafia_room)):
-                        id = Mafia_room[i].id_chat
+                    for a in range(0, len(Mafia_room)):
+                        id = Mafia_room[a].id_chat
                         if id == message.from_user.id: # Обрабатывает сообщение если человек находится в лобби мафии
-                            for i in range(0, len(Mafia_room)):
-                                    id = Mafia_room[i].id_chat
+                            for b in range(0, len(Mafia_room)):
+                                    id = Mafia_room[b].id_chat
                                     if id != message.from_user.id:  # Убирает эфект эхо
-                                        Mafia.send_message(id, message.text)
-
-
-
-
-
-
-
-
-
+                                        Mafia.send_message(id, f"{name}: {message.text}")
 
 
 Mafia.polling(none_stop=True)   # точка входа
