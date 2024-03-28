@@ -3,5 +3,5 @@ class MafiaPlayer():
         self.name = "Bob"
         self.role = "cityzen"
         self.id_chat = 0
-        alive = True
+        self.alive = True
         

@@ -10,9 +10,9 @@ Mafia = telebot.TeleBot('6847605581:AAFshf6F811PHzdMu98gvEg26RRNOrLf2Y8')
 
 users = set()
 
-Name = ["Bob", "Alpha", "Sugar"]
+Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia", "cityzen"]
+Role = ["Mafia", "cityzen"] 
 
 waiting_room = []
 
@@ -58,19 +58,36 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Наступил день. Самое время друг с другом познакомиться, вам даётся 1 минута.")
-    time_sleep(10)
+    time_sleep(5)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Наступила ночь.")
-        Mafia.send_message(player.id_chat, f"Мафия делает свой выбор.")
+        Mafia.send_message(player.id_chat, f"Посыпается Мафия.")
     global Mafia_chat_mode
     Mafia_chat_mode = True
-    time_sleep(60)
+    time_sleep(5)
     for i in range(0,len(lobby)):
         player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")
+        Mafia.send_message(player.id_chat, f"Мафия делает свой выбор")
+    file = open('Mafia-knife.jpg', 'rb')
+    for i in range(0,len(Mafia_room)):
+        id = Mafia_room[i].id_chat
+        markup = mafia_buttons_photo(message)
+        Mafia.send_photo(id, file, reply_markup=markup)    
+    time_sleep(5)
+           
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
+    
 
-
+def mafia_buttons_photo(message):
+    markup = types.InlineKeyboardMarkup()
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        if player.alive == True and player.role != "Mafia":
+            markup.add(types.InlineKeyboardButton(text=f"{player.name}"))
+    return markup
 
 def time_sleep(second):
     sleep(second)
