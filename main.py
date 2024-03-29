@@ -61,8 +61,8 @@ def start_game(message):
     time_sleep(5)
     for i in range(0,len(lobby)):
         player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Наступила ночь.")
-        Mafia.send_message(player.id_chat, f"Посыпается Мафия.")
+        Mafia.send_message(player.id_chat, f"Наступила ночь")
+        Mafia.send_message(player.id_chat, f"Просыпается Мафия")
     global Mafia_chat_mode
     Mafia_chat_mode = True
     time_sleep(5)
@@ -73,7 +73,7 @@ def start_game(message):
     for i in range(0,len(Mafia_room)):
         id = Mafia_room[i].id_chat
         markup = mafia_buttons_photo(message)
-        Mafia.send_photo(id, file)
+        Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(5)
 
     for i in range(0,len(lobby)):
@@ -86,8 +86,13 @@ def mafia_buttons_photo(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.alive == True and player.role != "Mafia":
-            markup.add(types.InlineKeyboardButton(text=f"{player.name}"))
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
     return markup
+
+
+
+def button_click():
+    pass
 
 def time_sleep(second):
     sleep(second)
