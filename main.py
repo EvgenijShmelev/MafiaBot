@@ -12,7 +12,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia", "cityzen"]
+Role = ["Mafia","Mafia","cityzen","cityzen", "cityzen", "cityzen", "Doctor", "Sheriff"]
 
 choice_mafia = []
 
@@ -77,15 +77,40 @@ def start_game(message):
         markup = mafia_buttons_photo(message)
         Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(5)
-
-
     finally_choice_mafia = process_mafia_choice(choice_mafia)
-    
-
-
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
+    time_sleep(5)
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Просыпается доктор")# Всем игрокам отсылается сообщение
+        Mafia.send_message(player.id_chat, f"Доктор делает свой выбор")# Всем игрокам отсылается сообщение
+    file = open('Medic1.png', 'rb')
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        if player.role == 'Doctor':
+            id = player.id
+            markup = doctor_buttons_photo(message)
+            Mafia.send_photo(id, file, reply_markup=markup)
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение           
+    time_sleep(5)
+    
+    
+
+
+
+  
+
+def doctor_buttons_photo(message):
+    markup = types.InlineKeyboardMarkup()
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        if player.alive == True:
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
+    return markup    
 
 
 def mafia_buttons_photo(message):
@@ -93,7 +118,7 @@ def mafia_buttons_photo(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.alive == True and player.role != "Mafia":
-            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name_mafia}"))
     return markup
 
 def doca(callback):
@@ -116,6 +141,15 @@ def process_mafia_choice(choice_mafia):
         name1 = choice_mafia[0]
         return name1
     if len(choice_mafia) == 0:
+        mortals = []
+        for i in range(0,len(lobby)):
+            player = lobby[i] 
+            if player.alive == True and player.role != "Mafia":
+                mortals.append(player.name)
+        random.shuffle(mortals)
+        return mortals[1]
+
+        
         
         
 
