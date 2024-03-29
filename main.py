@@ -112,7 +112,7 @@ def doctor_buttons_photo(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.alive == True:
-            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}_Doctor"))
     return markup
 
 
@@ -121,11 +121,19 @@ def mafia_buttons_photo(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.alive == True and player.role != "Mafia":
-            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}_Mafia"))
     return markup
 
-def doca(callback):
-    choice_mafia.append(callback.data)
+def doca_mafia(callback):
+    a = callback.data
+    b = a.replace("_Mafia", "")
+    choice_mafia.append(b)
+    Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+
+def doca_doctor(callback):
+    a = callback.data
+    b = a.replace("_Mafia", "")
+    choice_mafia.append(b)
     Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
 
 def process_mafia_choice(choice_mafia):
@@ -159,22 +167,39 @@ def process_mafia_choice(choice_mafia):
 
 @Mafia.callback_query_handler(func=lambda callback: True)
 def callback_message(callback):
-    if callback.data.name == 'Bob':   #Обрабатываем выбор мафиии после нажатия на кнопки
-        doca(callback)
-    if callback.data.name == 'Alpha':
-        doca(callback)
-    if callback.data.name == 'Sugar':
-        doca(callback)
-    if callback.data.name == 'Pahan':
-        doca(callback)
-    if callback.data.name == 'Noob':
-        doca(callback)
-    if callback.data.name == 'Thief':
-        doca(callback)
-    if callback.data.name == 'Tim':
-        doca(callback)
-    if callback.data.name == 'Logan':
-        doca(callback)
+    if callback.data == 'Bob_Mafia':   #Обрабатываем выбор мафиии после нажатия на кнопки
+        doca_mafia(callback)
+    if callback.data == 'Alpha_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Sugar_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Pahan_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Noob_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Thief_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Tim_Mafia':
+        doca_mafia(callback)
+    if callback.data == 'Logan_Mafia':
+        doca_mafia(callback)
+
+    if callback.data == 'Bob_Doctor':   #Обрабатываем выбор мафиии после нажатия на кнопки
+        doca_doctor(callback)
+    if callback.data == 'Alpha_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Sugar_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Pahan_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Noob_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Thief_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Tim_Doctor':
+        doca_doctor(callback)
+    if callback.data == 'Logan_Doctor':
+        doca_doctor(callback)
 
 def time_sleep(second):
     sleep(second)
