@@ -14,6 +14,8 @@ Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
 Role = ["Mafia", "cityzen"]
 
+choice_mafia = []
+
 waiting_room = []
 
 lobby = []
@@ -76,6 +78,11 @@ def start_game(message):
         Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(5)
 
+
+    finally_choice_mafia = process_mafia_choice(choice_mafia)
+    
+
+
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
@@ -89,15 +96,52 @@ def mafia_buttons_photo(message):
             markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
     return markup
 
+def doca(callback):
+    choice_mafia.append(callback.data)
+    Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
 
+def process_mafia_choice(choice_mafia):
+    if len(choice_mafia) == 2:
+        name1 = choice_mafia[0]
+        name2 = choice_mafia[1]
+        if name1 == name2:
+            return name1 
+        if name1 != name2:
+           k = random.randint(0, 1)
+           if k == 0:
+               return name1
+           if k == 1:
+               return name2
+    if len(choice_mafia) == 1:
+        name1 = choice_mafia[0]
+        return name1
+    if len(choice_mafia) == 0:
+        
+        
 
-def button_click():
-    pass
+    
+
+@Mafia.callback_query_handler(func=lambda callback: True)
+def callback_message(callback):
+    if callback.data == 'Bob':   #Обрабатываем выбор мафиии после нажатия на кнопки
+        doca(callback)
+    if callback.data == 'Alpha':
+        doca(callback)
+    if callback.data == 'Sugar':
+        doca(callback)
+    if callback.data == 'Pahan':
+        doca(callback)
+    if callback.data == 'Noob':
+        doca(callback)
+    if callback.data == 'Thief':
+        doca(callback)
+    if callback.data == 'Tim':
+        doca(callback)
+    if callback.data == 'Logan':
+        doca(callback)
 
 def time_sleep(second):
     sleep(second)
-
-
 
 @Mafia.message_handler(func=lambda message: True)
 def on_message(message):
