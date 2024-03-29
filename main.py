@@ -78,7 +78,7 @@ def start_game(message):
         Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(5)
     finally_choice_mafia = process_mafia_choice(choice_mafia)
-    
+
 
 
     for i in range(0,len(lobby)):
@@ -98,14 +98,14 @@ def start_game(message):
             Mafia.send_photo(id, file, reply_markup=markup)
     for i in range(0,len(lobby)):
         player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение           
+        Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение
     time_sleep(5)
-    
-    
 
 
 
-  
+
+
+
 
 def doctor_buttons_photo(message):
     markup = types.InlineKeyboardMarkup()
@@ -113,7 +113,7 @@ def doctor_buttons_photo(message):
         player = lobby[i]
         if player.alive == True:
             markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
-    return markup    
+    return markup
 
 
 def mafia_buttons_photo(message):
@@ -144,8 +144,16 @@ def process_mafia_choice(choice_mafia):
         name1 = choice_mafia.name[0]
         return name1
     if len(choice_mafia) == 0:
-        
-        
+        mortals = []
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            if player.alive == True:
+                mortals.append(player)
+        return mortals[0]
+
+
+
+
 
 
 
