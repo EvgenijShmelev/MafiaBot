@@ -12,7 +12,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia","Mafia","cityzen","cityzen", "cityzen", "cityzen", "Doctor", "Sheriff"]
+Role = ["Mafia", "Doctor"]
 
 choice_mafia = []
 
@@ -93,7 +93,7 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.role == 'Doctor':
-            id = player.id
+            id = player.id_chat
             markup = doctor_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)
     for i in range(0,len(lobby)):
@@ -138,8 +138,8 @@ def doca_doctor(callback):
 
 def process_mafia_choice(choice_mafia):
     if len(choice_mafia) == 2:
-        name1 = choice_mafia.name[0]
-        name2 = choice_mafia.name[1]
+        name1 = choice_mafia[0]
+        name2 = choice_mafia[1]
         if name1 == name2:
             return name1
         if name1 != name2:
@@ -149,7 +149,7 @@ def process_mafia_choice(choice_mafia):
            if k == 1:
                return name2
     if len(choice_mafia) == 1:
-        name1 = choice_mafia.name[0]
+        name1 = choice_mafia[0]
         return name1
     if len(choice_mafia) == 0:
         mortals = []
