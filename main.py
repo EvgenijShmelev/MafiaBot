@@ -78,6 +78,9 @@ def start_game(message):
         Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(5)
     finally_choice_mafia = process_mafia_choice(choice_mafia)
+    
+
+
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
@@ -118,7 +121,7 @@ def mafia_buttons_photo(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         if player.alive == True and player.role != "Mafia":
-            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name_mafia}"))
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}"))
     return markup
 
 def doca(callback):
@@ -127,10 +130,10 @@ def doca(callback):
 
 def process_mafia_choice(choice_mafia):
     if len(choice_mafia) == 2:
-        name1 = choice_mafia[0]
-        name2 = choice_mafia[1]
+        name1 = choice_mafia.name[0]
+        name2 = choice_mafia.name[1]
         if name1 == name2:
-            return name1 
+            return name1
         if name1 != name2:
            k = random.randint(0, 1)
            if k == 0:
@@ -138,40 +141,31 @@ def process_mafia_choice(choice_mafia):
            if k == 1:
                return name2
     if len(choice_mafia) == 1:
-        name1 = choice_mafia[0]
+        name1 = choice_mafia.name[0]
         return name1
     if len(choice_mafia) == 0:
-        mortals = []
-        for i in range(0,len(lobby)):
-            player = lobby[i] 
-            if player.alive == True and player.role != "Mafia":
-                mortals.append(player.name)
-        random.shuffle(mortals)
-        return mortals[1]
-
-        
         
         
 
-    
+
 
 @Mafia.callback_query_handler(func=lambda callback: True)
 def callback_message(callback):
-    if callback.data == 'Bob':   #Обрабатываем выбор мафиии после нажатия на кнопки
+    if callback.data.name == 'Bob':   #Обрабатываем выбор мафиии после нажатия на кнопки
         doca(callback)
-    if callback.data == 'Alpha':
+    if callback.data.name == 'Alpha':
         doca(callback)
-    if callback.data == 'Sugar':
+    if callback.data.name == 'Sugar':
         doca(callback)
-    if callback.data == 'Pahan':
+    if callback.data.name == 'Pahan':
         doca(callback)
-    if callback.data == 'Noob':
+    if callback.data.name == 'Noob':
         doca(callback)
-    if callback.data == 'Thief':
+    if callback.data.name == 'Thief':
         doca(callback)
-    if callback.data == 'Tim':
+    if callback.data.name == 'Tim':
         doca(callback)
-    if callback.data == 'Logan':
+    if callback.data.name == 'Logan':
         doca(callback)
 
 def time_sleep(second):
