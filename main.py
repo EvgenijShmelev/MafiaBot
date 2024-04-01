@@ -12,7 +12,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia", "Doctor","Sheriff"]
+Role = ["Mafia","Sheriff"]
 
 choice_mafia = []
 
@@ -37,7 +37,7 @@ def finde_thegame(message):
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
 
-    if len(waiting_room) >= 3:
+    if len(waiting_room) >= 2:
         random_name = Name
         random.shuffle(random_name)  # перебор массива имён
         random_role = Role
@@ -117,7 +117,7 @@ def start_game(message):
         player = lobby[i]
         if player.role == 'Sheriff':
             id = player.id_chat
-            markup = doctor_buttons_photo(message)
+            markup = sheriff_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото шерифа (для выбора проверки игрока)
     time_sleep(10)
     for i in range(0,len(lobby)):
@@ -177,7 +177,7 @@ def doca_sheriff(callback):
     a = callback.data
     b = a.replace("_Sheriff", "")
     global sheriff 
-    sheriff = b
+    sheriff = b # Имя человека, которого выбрал шериф
     Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
     for i in range(0,len(lobby)):
         player = lobby[i]
