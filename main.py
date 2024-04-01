@@ -20,6 +20,8 @@ doctor = ''
 
 sheriff = ''
 
+finally_choice_mafia = ""
+
 waiting_room = []
 
 lobby = []
@@ -81,7 +83,6 @@ def start_game(message):
         markup = mafia_buttons_photo(message)
         Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(10)
-    finally_choice_mafia = process_mafia_choice(choice_mafia)
 
 
 
@@ -160,31 +161,54 @@ def mafia_buttons_photo(message):
             markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}_Mafia"))
     return markup
 
-def doca_mafia(callback):
-    a = callback.data
-    b = a.replace("_Mafia", "")
-    choice_mafia.append(b)
-    Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+# def doca_mafia(callback):
+#     a = callback.data
+#     b = a.replace("_Mafia", "")
+#     choice_mafia.append(b)
+#     Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
 
-def doca_doctor(callback):
-    a = callback.data
-    b = a.replace("_Doctor", "")
-    global doctor
-    doctor = b
-    Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+# def doca_doctor(callback):
+#     a = callback.data
+#     b = a.replace("_Doctor", "")
+#     global doctor
+#     doctor = b
+#     Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
 
-def doca_sheriff(callback):
-    a = callback.data
-    b = a.replace("_Sheriff", "")
-    global sheriff 
-    sheriff = b # Имя человека, которого выбрал шериф
-    Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        if player.name == sheriff:
-            Mafia.send_message(callback.message.chat.id, f'Выбранный вами игрок является {player.role}')
+# def doca_sheriff(callback):
+#     a = callback.data
+#     b = a.replace("_Sheriff", "")
+#     global sheriff 
+#     sheriff = b # Имя человека, которого выбрал шериф
+#     Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+#     for i in range(0,len(lobby)):
+#         player = lobby[i]
+#         if player.name == sheriff:
+#             Mafia.send_message(callback.message.chat.id, f'Выбранный вами игрок является {player.role}')
 
-def process_mafia_choice(choice_mafia):
+def doca(callback): # Обрабатываем нажатие кнопок
+    a = callback.data
+    if "_Mafia" in a:
+        b = a.replace("_Mafia", "")
+        choice_mafia.append(b)
+        Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+        global finally_choice_mafia
+        finally_choice_mafia = process_mafia_choice(choice_mafia)
+    if "_Doctor" in a:
+        b = a.replace("_Doctor", "")
+        global doctor
+        doctor = b
+        Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+    if "_Sheriff" in a:
+        b = a.replace("_Sheriff", "")
+        global sheriff
+        sheriff = b # Имя человека, которого выбрал шериф
+        Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            if player.name == sheriff:
+                Mafia.send_message(callback.message.chat.id, f'Выбранный вами игрок является {player.role}')
+
+def process_mafia_choice(choice_mafia): # Обрабатываем выбор мафий и делаем конечный выбор
     if len(choice_mafia) == 2:
         name1 = choice_mafia[0]
         name2 = choice_mafia[1]
@@ -213,63 +237,63 @@ def process_mafia_choice(choice_mafia):
 
 
 
-@Mafia.callback_query_handler(func=lambda callback: True)
+@Mafia.callback_query_handler(func=lambda callback: True) # Перехватываем нажатие кнопок и вызываем функцию
 def callback_message(callback):
     if callback.data == 'Bob_Mafia':   #Обрабатываем выбор мафиии после нажатия на кнопки
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Alpha_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Sugar_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Pahan_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Noob_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Thief_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Tim_Mafia':
-        doca_mafia(callback)
+        doca(callback)
     if callback.data == 'Logan_Mafia':
-        doca_mafia(callback)
+        doca(callback)
 
     if callback.data == 'Bob_Doctor':   #Обрабатываем выбор мафиии после нажатия на кнопки
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Alpha_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Sugar_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Pahan_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Noob_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Thief_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Tim_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     if callback.data == 'Logan_Doctor':
-        doca_doctor(callback)
+        doca(callback)
     
     if callback.data == 'Bob_Sheriff':   #Обрабатываем выбор мафиии после нажатия на кнопки
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Alpha_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Sugar_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Pahan_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Noob_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Thief_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Tim_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
     if callback.data == 'Logan_Sheriff':
-        doca_sheriff(callback)
+        doca(callback)
 
 def time_sleep(second):
     sleep(second)
 
-@Mafia.message_handler(func=lambda message: True)
+@Mafia.message_handler(func=lambda message: True) # Анонимный чат
 def on_message(message):
     print(message)
     for i in range(0, len(lobby)):
