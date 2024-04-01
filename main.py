@@ -3,6 +3,11 @@ from telebot import types
 from roles import MafiaPlayer
 import random, threading
 from time import sleep
+from collections import Counter
+
+time_pause = 2
+
+golosa = []
 
 Mafia_room = []
 
@@ -66,12 +71,12 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Наступил день. Самое время друг с другом познакомиться, вам даётся 1 минута.")
-    time_sleep(5)
+    time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Наступила ночь")
         Mafia.send_message(player.id_chat, f"Просыпается Мафия")
-    time_sleep(5)
+    time_sleep(time_pause)
     global Mafia_chat_mode
     Mafia_chat_mode = True
     for i in range(0,len(lobby)):
@@ -82,19 +87,21 @@ def start_game(message):
         id = Mafia_room[i].id_chat
         markup = mafia_buttons_photo(message)
         Mafia.send_photo(id, file, reply_markup=markup)
-    time_sleep(10)
+    finally_choice_mafia = process_mafia_choice(choice_mafia)
+    time_sleep(time_pause)
+    
 
 
 
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(10)
+    time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Просыпается доктор")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Доктор делает свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(10)
+    time_sleep(time_pause)
     file = open('Medic1.png', 'rb')
     for i in range(0,len(lobby)):
         player = lobby[i]
@@ -102,17 +109,17 @@ def start_game(message):
             id = player.id_chat
             markup = doctor_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото медика (для выбора лечения)
-    time_sleep(10)
+    time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Доктор засыпает")# Всем игрокам отсылается сообщение
-    time_sleep(10)
+    time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Просыпается шериф")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Шериф делает свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(10)
+    time_sleep(time_pause)
     file = open('Sheriff.jpg', 'rb')
     for i in range(0,len(lobby)):
         player = lobby[i]
@@ -120,20 +127,99 @@ def start_game(message):
             id = player.id_chat
             markup = sheriff_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото шерифа (для выбора проверки игрока)
-    time_sleep(10)
+    time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Шериф сделал свой выбор")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Шериф засыпает")# Всем игрокам отсылается сообщение
-    time_sleep(10)
+    time_sleep(time_pause)
+    finally_result(finally_choice_mafia, doctor, message)
+    Mafia_chat_mode
+    Mafia_chat_mode =False
+    time_sleep(time_pause)
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Наступил день и вам даётся 1 минута для рассуждения, для выбора игрока на вылет")# Всем игрокам отсылается сообщение
+    time_sleep(time_pause)
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        Mafia.send_message(player.id_chat, f"Голосование")
+    file = open('Golosovanie.jpg', 'rb')
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        if player.alive == True:
+            id = player.id_chat
+            markup = golos_buttons_photo(message)
+            Mafia.send_photo(id, file, reply_markup=markup)
+    time_sleep(time_pause)
+    golos_result(golosa,message)
+
+
+
+    
+    
     
         
 
     
+def golos_result(golosa, message):
+    dead_man = None
+    c = Counter(golosa)
+    accused_1 = max(c.values())
+    count = 0
+    for i in c.values:
+        if i == accused_1:
+            count = count + 1  #присваеваем кол-во максимальному значению count где максимальное значение - это сколько голосов дали за игрока
+    
+    if count == 1:
+        name = {i for i in c if c[i]== accused_1}
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            if name.name == name:
+                dead_man = player
+                player.alive = False
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Выбол игрок с именем {dead_man.name},и его роль {dead_man.role}")# Всем игрокам отсылается сообщение
+
+    if accused_1 == 0:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Голосование скипается")# Всем игрокам отсылается сообщение
+    if count > 1:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Голосование прошло не успешно. Голосующие не смогли определиться")# Всем игрокам отсылается сообщение
+    
+    
 
 
 
 
+def finally_result(finally_choice_mafia, doctor, message):
+    dead_man = None
+    if finally_choice_mafia == doctor:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Никто этой ночью не был убит")# Всем игрокам отсылается сообщение
+    else:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            #Mafia.send_message(player.id_chat, f"Убили игрока{finally_choice_mafia}")# Всем игрокам отсылается сообщение
+            if player.name == finally_choice_mafia.name:
+                dead_man = player
+                player.alive = False
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Убили игрока {dead_man.name},и его роль {dead_man.role}")# Всем игрокам отсылается сообщение
+
+def golos_buttons_photo(message):
+    markup = types.InlineKeyboardMarkup()
+    for i in range(0,len(lobby)):
+        player = lobby[i]
+        if player.alive == True:
+            markup.add(types.InlineKeyboardButton(f"{player.name}", callback_data=f"{player.name}_Golos"))
+    return markup
 
 
 def sheriff_buttons_photo(message):
@@ -191,8 +277,7 @@ def doca(callback): # Обрабатываем нажатие кнопок
         b = a.replace("_Mafia", "")
         choice_mafia.append(b)
         Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
-        global finally_choice_mafia
-        finally_choice_mafia = process_mafia_choice(choice_mafia)
+        
     if "_Doctor" in a:
         b = a.replace("_Doctor", "")
         global doctor
@@ -207,6 +292,11 @@ def doca(callback): # Обрабатываем нажатие кнопок
             player = lobby[i]
             if player.name == sheriff:
                 Mafia.send_message(callback.message.chat.id, f'Выбранный вами игрок является {player.role}')
+    if "_Golos" in a:
+        b = a.replace("_Golos", "")
+        golosa.append(b)
+        Mafia.delete_message(callback.message.chat.id, callback.message.message_id)
+        
 
 def process_mafia_choice(choice_mafia): # Обрабатываем выбор мафий и делаем конечный выбор
     if len(choice_mafia) == 2:
@@ -288,6 +378,23 @@ def callback_message(callback):
     if callback.data == 'Tim_Sheriff':
         doca(callback)
     if callback.data == 'Logan_Sheriff':
+        doca(callback)
+    
+    if callback.data == 'Bob_Golos':   #Обрабатываем выбор мафиии после нажатия на кнопки
+        doca(callback)
+    if callback.data == 'Alpha_Golos':
+        doca(callback)
+    if callback.data == 'Sugar_Golos':
+        doca(callback)
+    if callback.data == 'Pahan_Golos':
+        doca(callback)
+    if callback.data == 'Noob_Golos':
+        doca(callback)
+    if callback.data == 'Thief_Golos':
+        doca(callback)
+    if callback.data == 'Tim_Golos':
+        doca(callback)
+    if callback.data == 'Logan_Golos':
         doca(callback)
 
 def time_sleep(second):
