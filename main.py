@@ -159,10 +159,26 @@ def start_game(message):
 
 
 
+
     
     
     
-        
+def end_game():
+    for i in range (0,len(lobby)):
+        player = lobby[i]
+        count_mafia_dead = 0
+        mafia_alive = []
+        cityzen = []
+        if player.role == "Mafia" and player.alive == True: #Если 2 мафии живы
+            mafia_alive.append(player)
+        if player.role == "cityzen" or player.role == "Doctor" or player.role == "Sheriff" and player.alive == True: #Если житель жив
+            cityzen.append(player)
+    if len(mafia_alive) == len(cityzen):
+        return True
+    elif len(mafia_alive) == 0:
+        return True
+
+
 
     
 def golos_result(golosa, message):
