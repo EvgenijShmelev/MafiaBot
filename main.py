@@ -5,7 +5,7 @@ import random, threading
 from time import sleep
 from collections import Counter
 
-time_pause = 2
+time_pause = 5
 
 golosa = []
 
@@ -17,7 +17,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia","Sheriff"]
+Role = ["Mafia","Sheriff","Mafia"]
 
 choice_mafia = []
 
@@ -44,7 +44,7 @@ def finde_thegame(message):
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
 
-    if len(waiting_room) >= 2:
+    if len(waiting_room) >= 3:
         random_name = Name
         random.shuffle(random_name)  # перебор массива имён
         random_role = Role
@@ -82,11 +82,13 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Мафия делает свой выбор")
-    file = open('Mafia-knife3.png', 'rb')
     for i in range(0,len(Mafia_room)):
+        file = open('Mafia-knife3.png', 'rb')
         id = Mafia_room[i].id_chat
         markup = mafia_buttons_photo(message)
         Mafia.send_photo(id, file, reply_markup=markup)
+    time_sleep(time_pause + time_pause)
+    global finally_choice_mafia
     finally_choice_mafia = process_mafia_choice(choice_mafia)
     time_sleep(time_pause)
     
@@ -102,8 +104,8 @@ def start_game(message):
         Mafia.send_message(player.id_chat, f"Просыпается доктор")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Доктор делает свой выбор")# Всем игрокам отсылается сообщение
     time_sleep(time_pause)
-    file = open('Medic1.png', 'rb')
     for i in range(0,len(lobby)):
+        file = open('Medic1.png', 'rb')
         player = lobby[i]
         if player.role == 'Doctor':
             id = player.id_chat
@@ -120,20 +122,21 @@ def start_game(message):
         Mafia.send_message(player.id_chat, f"Просыпается шериф")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Шериф делает свой выбор")# Всем игрокам отсылается сообщение
     time_sleep(time_pause)
-    file = open('Sheriff.jpg', 'rb')
     for i in range(0,len(lobby)):
+        file = open('Sheriff.jpg', 'rb')
         player = lobby[i]
         if player.role == 'Sheriff':
             id = player.id_chat
             markup = sheriff_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото шерифа (для выбора проверки игрока)
+    file.close()
     time_sleep(time_pause)
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Шериф сделал свой выбор")# Всем игрокам отсылается сообщение
         Mafia.send_message(player.id_chat, f"Шериф засыпает")# Всем игрокам отсылается сообщение
     time_sleep(time_pause)
-    finally_result(finally_choice_mafia, doctor, message)
+    finally_result(message)
     Mafia_chat_mode
     Mafia_chat_mode =False
     time_sleep(time_pause)
@@ -144,12 +147,12 @@ def start_game(message):
     for i in range(0,len(lobby)):
         player = lobby[i]
         Mafia.send_message(player.id_chat, f"Голосование")
-    file = open('Golosovanie.jpg', 'rb')
+    markup = golos_buttons_photo(message)
     for i in range(0,len(lobby)):
+        file = open('Golosovanie.jpg', 'rb')
         player = lobby[i]
         if player.alive == True:
             id = player.id_chat
-            markup = golos_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)
     time_sleep(time_pause)
     golos_result(golosa,message)
@@ -196,8 +199,10 @@ def golos_result(golosa, message):
 
 
 
-def finally_result(finally_choice_mafia, doctor, message):
+def finally_result(message):
     dead_man = None
+    global doctor
+    global finally_choice_mafia
     if finally_choice_mafia == doctor:
         for i in range(0,len(lobby)):
             player = lobby[i]
@@ -206,7 +211,7 @@ def finally_result(finally_choice_mafia, doctor, message):
         for i in range(0,len(lobby)):
             player = lobby[i]
             #Mafia.send_message(player.id_chat, f"Убили игрока{finally_choice_mafia}")# Всем игрокам отсылается сообщение
-            if player.name == finally_choice_mafia.name:
+            if player.name == finally_choice_mafia:
                 dead_man = player
                 player.alive = False
         for i in range(0,len(lobby)):
@@ -310,16 +315,17 @@ def process_mafia_choice(choice_mafia): # Обрабатываем выбор м
                return name1
            if k == 1:
                return name2
-    if len(choice_mafia) == 1:
+    elif len(choice_mafia) == 1:
         name1 = choice_mafia[0]
         return name1
-    if len(choice_mafia) == 0:
+    elif len(choice_mafia) == 0:
         mortals = []
         for i in range(0,len(lobby)):
             player = lobby[i]
             if player.alive == True:
                 mortals.append(player)
-        return mortals[0]
+        random.shuffle(mortals) 
+        return mortals[0].name
 
 
 
