@@ -68,102 +68,99 @@ def finde_thegame(message):
 
 
 def start_game(message):
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Наступил день. Самое время друг с другом познакомиться, вам даётся 1 минута.")
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Наступила ночь")
-        Mafia.send_message(player.id_chat, f"Просыпается Мафия")
-    time_sleep(time_pause)
-    global Mafia_chat_mode
-    Mafia_chat_mode = True
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Мафия делает свой выбор")
-    for i in range(0,len(Mafia_room)):
-        file = open('Mafia-knife3.png', 'rb')
-        id = Mafia_room[i].id_chat
-        markup = mafia_buttons_photo(message)
-        Mafia.send_photo(id, file, reply_markup=markup)
-    time_sleep(time_pause + time_pause)
-    global finally_choice_mafia
-    finally_choice_mafia = process_mafia_choice(choice_mafia)
-    time_sleep(time_pause)
-    
-
-
-
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Просыпается доктор")# Всем игрокам отсылается сообщение
-        Mafia.send_message(player.id_chat, f"Доктор делает свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        file = open('Medic1.png', 'rb')
-        player = lobby[i]
-        if player.role == 'Doctor':
-            id = player.id_chat
-            markup = doctor_buttons_photo(message)
-            Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото медика (для выбора лечения)
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение
-        Mafia.send_message(player.id_chat, f"Доктор засыпает")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Просыпается шериф")# Всем игрокам отсылается сообщение
-        Mafia.send_message(player.id_chat, f"Шериф делает свой выбор")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        file = open('Sheriff.jpg', 'rb')
-        player = lobby[i]
-        if player.role == 'Sheriff':
-            id = player.id_chat
-            markup = sheriff_buttons_photo(message)
-            Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото шерифа (для выбора проверки игрока)
-    file.close()
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Шериф сделал свой выбор")# Всем игрокам отсылается сообщение
-        Mafia.send_message(player.id_chat, f"Шериф засыпает")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    finally_result(message)
-    Mafia_chat_mode
-    Mafia_chat_mode =False
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Наступил день и вам даётся 1 минута для рассуждения, для выбора игрока на вылет")# Всем игрокам отсылается сообщение
-    time_sleep(time_pause)
-    for i in range(0,len(lobby)):
-        player = lobby[i]
-        Mafia.send_message(player.id_chat, f"Голосование")
-    markup = golos_buttons_photo(message)
-    for i in range(0,len(lobby)):
-        file = open('Golosovanie.jpg', 'rb')
-        player = lobby[i]
-        if player.alive == True:
-            id = player.id_chat
+    while dota == False:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Наступил день. Самое время друг с другом познакомиться, вам даётся 1 минута.")
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Наступила ночь")
+            Mafia.send_message(player.id_chat, f"Просыпается Мафия")
+        time_sleep(time_pause)
+        global Mafia_chat_mode
+        Mafia_chat_mode = True
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Мафия делает свой выбор")
+        for i in range(0,len(Mafia_room)):
+            file = open('Mafia-knife3.png', 'rb')
+            id = Mafia_room[i].id_chat
+            markup = mafia_buttons_photo(message)
             Mafia.send_photo(id, file, reply_markup=markup)
-    time_sleep(time_pause)
-    golos_result(golosa,message)
+        time_sleep(time_pause + time_pause)
+        global finally_choice_mafia
+        finally_choice_mafia = process_mafia_choice(choice_mafia)
+        time_sleep(time_pause)
+        
 
 
 
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Мафия сделала свой выбор")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Просыпается доктор")# Всем игрокам отсылается сообщение
+            Mafia.send_message(player.id_chat, f"Доктор делает свой выбор")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            file = open('Medic1.png', 'rb')
+            player = lobby[i]
+            if player.role == 'Doctor':
+                id = player.id_chat
+                markup = doctor_buttons_photo(message)
+                Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото медика (для выбора лечения)
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Доктор сделал свой выбор")# Всем игрокам отсылается сообщение
+            Mafia.send_message(player.id_chat, f"Доктор засыпает")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Просыпается шериф")# Всем игрокам отсылается сообщение
+            Mafia.send_message(player.id_chat, f"Шериф делает свой выбор")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            file = open('Sheriff.jpg', 'rb')
+            player = lobby[i]
+            if player.role == 'Sheriff':
+                id = player.id_chat
+                markup = sheriff_buttons_photo(message)
+                Mafia.send_photo(id, file, reply_markup=markup)  # отсылает фото шерифа (для выбора проверки игрока)
+        file.close()
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Шериф сделал свой выбор")# Всем игрокам отсылается сообщение
+            Mafia.send_message(player.id_chat, f"Шериф засыпает")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        finally_result(message)
+        Mafia_chat_mode
+        Mafia_chat_mode =False
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Наступил день и вам даётся 1 минута для рассуждения, для выбора игрока на вылет")# Всем игрокам отсылается сообщение
+        time_sleep(time_pause)
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Голосование")
+        markup = golos_buttons_photo(message)
+        for i in range(0,len(lobby)):
+            file = open('Golosovanie.jpg', 'rb')
+            player = lobby[i]
+            if player.alive == True:
+                id = player.id_chat
+                Mafia.send_photo(id, file, reply_markup=markup)
+        time_sleep(time_pause)
+        golos_result(golosa,message)
+        dota = end_game(message)
 
-    
-    
-    
-def end_game():
+
+def end_game(message):
     for i in range (0,len(lobby)):
         player = lobby[i]
         count_mafia_dead = 0
@@ -174,9 +171,17 @@ def end_game():
         if player.role == "cityzen" or player.role == "Doctor" or player.role == "Sheriff" and player.alive == True: #Если житель жив
             cityzen.append(player)
     if len(mafia_alive) == len(cityzen):
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Победила мафия")
         return True
     elif len(mafia_alive) == 0:
+        for i in range(0,len(lobby)):
+            player = lobby[i]
+            Mafia.send_message(player.id_chat, f"Победили жители")
         return True
+    else:
+        return False
 
 
 
