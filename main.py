@@ -17,7 +17,7 @@ users = set()
 
 Name = ["Bob", "Alpha", "Sugar", "Pahan", "Noob", "Thief", "Tim", "Logan" ]
 
-Role = ["Mafia","Sheriff","Mafia"]
+Role = ["Mafia","Sheriff"]
 
 choice_mafia = []
 
@@ -44,7 +44,7 @@ def finde_thegame(message):
         if user != message.from_user.id:
             Mafia.send_message(user, f'Количество игроков в комнате ожидания = {len (waiting_room)}')  # Сообщение всем остальным игрокам о появление нового игрока
 
-    if len(waiting_room) >= 3:
+    if len(waiting_room) >= 2:
         random_name = Name
         random.shuffle(random_name)  # перебор массива имён
         random_role = Role
@@ -68,6 +68,7 @@ def finde_thegame(message):
 
 
 def start_game(message):
+    dota = True
     while dota == False:
         for i in range(0,len(lobby)):
             player = lobby[i]
